@@ -73,9 +73,7 @@ export function CheckoutModal({
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-card" onClick={(event) => event.stopPropagation()}>
-        <button className="modal-close" onClick={onClose} type="button" aria-label="Close">
-          ×
-        </button>
+        <button className="modal-close" onClick={onClose} type="button" aria-label="Close">×</button>
 
         <div className="modal-header">
           <div className="modal-header__badges">
@@ -121,7 +119,7 @@ export function CheckoutModal({
           <input
             value={customerEmail}
             onChange={(event) => setCustomerEmail(event.target.value)}
-            placeholder="client@example.com"
+            placeholder="you@example.com"
             type="email"
           />
         </div>
@@ -153,7 +151,12 @@ export function CheckoutModal({
           <button disabled={working || !customerEmail || order !== null} onClick={createOrder} type="button">
             {working && !order ? '⏳ Creating…' : t('createOrder')}
           </button>
-          <button disabled={working || !order || order.status === 'delivered'} onClick={confirmPayment} type="button" className="secondary">
+          <button
+            disabled={working || !order || order.status === 'delivered'}
+            onClick={confirmPayment}
+            type="button"
+            className="secondary"
+          >
             {working && order ? '⏳ Confirming…' : t('simulatePayment')}
           </button>
         </div>
@@ -168,29 +171,29 @@ export function CheckoutModal({
             </div>
 
             {order.delivery ? (
-              <div className="delivery-reveal">
-                <div>
-                  <span>Access ID</span>
-                  <strong>{order.delivery.accessId}</strong>
-                </div>
-                <div>
-                  <span>Secret</span>
-                  <strong className="delivery-secret">{order.delivery.secret}</strong>
-                </div>
-                <div>
-                  <span>Email</span>
-                  <strong>{order.delivery.email}</strong>
-                </div>
-                <div>
-                  <span>Email secret</span>
-                  <strong className="delivery-secret">{order.delivery.emailSecret}</strong>
-                </div>
-                {order.delivery.note && (
-                  <div className="delivery-note-full">
-                    <span>Note</span>
-                    <strong>{order.delivery.note}</strong>
+              <div className="credentials-reveal">
+                <div className="cred-section">
+                  <div className="cred-section__label">📱 {t('socialAccount')}</div>
+                  <div className="cred-row">
+                    <span>Email</span>
+                    <code>{order.delivery.socialEmail}</code>
                   </div>
-                )}
+                  <div className="cred-row">
+                    <span>Password</span>
+                    <code>{order.delivery.socialPassword}</code>
+                  </div>
+                </div>
+                <div className="cred-section">
+                  <div className="cred-section__label">📧 {t('webmail')}</div>
+                  <div className="cred-row">
+                    <span>Email</span>
+                    <code>{order.delivery.webmailEmail}</code>
+                  </div>
+                  <div className="cred-row">
+                    <span>Password</span>
+                    <code>{order.delivery.webmailPassword}</code>
+                  </div>
+                </div>
               </div>
             ) : null}
           </div>

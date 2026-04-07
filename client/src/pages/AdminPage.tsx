@@ -8,17 +8,17 @@ const PLATFORMS = ['Instagram', 'TikTok', 'Snapchat', 'Discord', 'GitHub', 'Robl
 
 const defaultProduct = {
   title: '',
-  platform: 'Instagram',
-  category: 'Reserved Handle',
-  rarity: 'Rare',
-  meaningLanguage: 'English',
-  priceUsd: 0,
+  platform: 'Discord',
+  category: 'Vanity Link',
+  rarity: 'Epic',
+  meaningLanguage: 'Universal',
+  priceUsd: 300,
   featured: true,
   status: 'published',
-  tags: 'premium, instant',
+  tags: 'vanity, OG, clean',
   shortDescription: '',
-  deliveryDescription: 'Delivery record is released after paid status is confirmed.',
-  previewDetails: 'Instant release\nEncrypted stock\nPremium support'
+  deliveryDescription: 'Full access package with social account and webmail credentials released after confirmed payment.',
+  previewDetails: 'Full account access\nInstant delivery\nEncrypted credentials'
 };
 
 const defaultSettings: AdminSettings = {
@@ -29,11 +29,10 @@ const defaultSettings: AdminSettings = {
 };
 
 const defaultInventory = {
-  accessId: '',
-  secret: '',
-  email: '',
-  emailSecret: '',
-  note: ''
+  socialEmail: '',
+  socialPassword: '',
+  webmailEmail: '',
+  webmailPassword: ''
 };
 
 type Section = 'overview' | 'products' | 'inventory' | 'orders' | 'settings' | 'help';
@@ -283,11 +282,21 @@ export function AdminPage() {
               <form className="editor-card" onSubmit={createProduct}>
                 <div className="form-grid two-columns">
                   <div className="field-stack">
-                    <label>Product title</label>
+                    <label>Handle / title</label>
                     <input
                       value={productForm.title}
                       onChange={(event) => setProductForm((prev) => ({ ...prev, title: event.target.value }))}
-                      placeholder="Aurora Handle Pack"
+                      placeholder="inch"
+                    />
+                  </div>
+                  <div className="field-stack">
+                    <label>Price (USD)</label>
+                    <input
+                      type="number"
+                      value={productForm.priceUsd}
+                      onChange={(event) =>
+                        setProductForm((prev) => ({ ...prev, priceUsd: Number(event.target.value) }))
+                      }
                     />
                   </div>
                   <div className="field-stack">
@@ -300,7 +309,7 @@ export function AdminPage() {
                     </select>
                   </div>
                   <div className="field-stack">
-                    <label>Product type</label>
+                    <label>Type</label>
                     <select
                       value={productForm.category}
                       onChange={(event) => setProductForm((prev) => ({ ...prev, category: event.target.value }))}
@@ -324,32 +333,6 @@ export function AdminPage() {
                     </select>
                   </div>
                   <div className="field-stack">
-                    <label>Meaning language</label>
-                    <select
-                      value={productForm.meaningLanguage}
-                      onChange={(event) =>
-                        setProductForm((prev) => ({ ...prev, meaningLanguage: event.target.value }))
-                      }
-                    >
-                      <option>English</option>
-                      <option>Italian</option>
-                      <option>Universal</option>
-                    </select>
-                  </div>
-                  <div className="field-stack">
-                    <label>Price in USD</label>
-                    <input
-                      type="number"
-                      value={productForm.priceUsd}
-                      onChange={(event) =>
-                        setProductForm((prev) => ({ ...prev, priceUsd: Number(event.target.value) }))
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="form-grid two-columns">
-                  <div className="field-stack">
                     <label>Status</label>
                     <select
                       value={productForm.status}
@@ -360,18 +343,18 @@ export function AdminPage() {
                       <option>hidden</option>
                     </select>
                   </div>
-                  <div className="field-stack inline-check">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={productForm.featured}
-                        onChange={(event) =>
-                          setProductForm((prev) => ({ ...prev, featured: event.target.checked }))
-                        }
-                      />
-                      Featured on storefront
-                    </label>
-                  </div>
+                </div>
+
+                <div className="field-stack">
+                  <label>Short description</label>
+                  <textarea
+                    rows={2}
+                    value={productForm.shortDescription}
+                    onChange={(event) =>
+                      setProductForm((prev) => ({ ...prev, shortDescription: event.target.value }))
+                    }
+                    placeholder="Short description visible on the product card"
+                  />
                 </div>
 
                 <div className="field-stack">
@@ -379,40 +362,21 @@ export function AdminPage() {
                   <input
                     value={productForm.tags}
                     onChange={(event) => setProductForm((prev) => ({ ...prev, tags: event.target.value }))}
+                    placeholder="vanity, OG, clean"
                   />
                 </div>
 
-                <div className="field-stack">
-                  <label>Short description</label>
-                  <textarea
-                    rows={3}
-                    value={productForm.shortDescription}
-                    onChange={(event) =>
-                      setProductForm((prev) => ({ ...prev, shortDescription: event.target.value }))
-                    }
-                  />
-                </div>
-
-                <div className="field-stack">
-                  <label>Delivery description</label>
-                  <textarea
-                    rows={3}
-                    value={productForm.deliveryDescription}
-                    onChange={(event) =>
-                      setProductForm((prev) => ({ ...prev, deliveryDescription: event.target.value }))
-                    }
-                  />
-                </div>
-
-                <div className="field-stack">
-                  <label>Preview details (one line per item)</label>
-                  <textarea
-                    rows={4}
-                    value={productForm.previewDetails}
-                    onChange={(event) =>
-                      setProductForm((prev) => ({ ...prev, previewDetails: event.target.value }))
-                    }
-                  />
+                <div className="field-stack inline-check">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={productForm.featured}
+                      onChange={(event) =>
+                        setProductForm((prev) => ({ ...prev, featured: event.target.checked }))
+                      }
+                    />
+                    Featured on storefront
+                  </label>
                 </div>
 
                 <button type="submit">Create product</button>
@@ -466,66 +430,67 @@ export function AdminPage() {
 
             <form className="editor-card" onSubmit={addInventory}>
               <div className="field-stack">
-                <label>Select product</label>
+                <label>Product</label>
                 <select value={selectedProductId} onChange={(event) => setSelectedProductId(event.target.value)}>
                   {products.map((product) => (
                     <option key={product.id} value={product.id}>
-                      {product.title}
+                      {product.platform} — {product.title}
                     </option>
                   ))}
                 </select>
               </div>
 
+              <div className="cred-form-heading">📱 Social account credentials</div>
               <div className="form-grid two-columns">
                 <div className="field-stack">
-                  <label>Access ID</label>
+                  <label>Social email</label>
                   <input
-                    value={inventoryForm.accessId}
+                    value={inventoryForm.socialEmail}
                     onChange={(event) =>
-                      setInventoryForm((prev) => ({ ...prev, accessId: event.target.value }))
+                      setInventoryForm((prev) => ({ ...prev, socialEmail: event.target.value }))
                     }
-                    placeholder="example-access-id"
+                    placeholder="account@social.com"
+                    type="email"
                   />
                 </div>
                 <div className="field-stack">
-                  <label>Secret</label>
+                  <label>Social password</label>
                   <input
-                    value={inventoryForm.secret}
-                    onChange={(event) => setInventoryForm((prev) => ({ ...prev, secret: event.target.value }))}
-                    placeholder="example-secret"
-                  />
-                </div>
-                <div className="field-stack">
-                  <label>Email</label>
-                  <input
-                    value={inventoryForm.email}
-                    onChange={(event) => setInventoryForm((prev) => ({ ...prev, email: event.target.value }))}
-                    placeholder="deliverable@example.com"
-                  />
-                </div>
-                <div className="field-stack">
-                  <label>Email secret</label>
-                  <input
-                    value={inventoryForm.emailSecret}
+                    value={inventoryForm.socialPassword}
                     onChange={(event) =>
-                      setInventoryForm((prev) => ({ ...prev, emailSecret: event.target.value }))
+                      setInventoryForm((prev) => ({ ...prev, socialPassword: event.target.value }))
                     }
-                    placeholder="email-secret"
+                    placeholder="social-password"
                   />
                 </div>
               </div>
 
-              <div className="field-stack">
-                <label>Private note</label>
-                <textarea
-                  rows={3}
-                  value={inventoryForm.note}
-                  onChange={(event) => setInventoryForm((prev) => ({ ...prev, note: event.target.value }))}
-                  placeholder="Any internal note to deliver with the record"
-                />
+              <div className="cred-form-heading">📧 Webmail credentials</div>
+              <div className="form-grid two-columns">
+                <div className="field-stack">
+                  <label>Webmail email</label>
+                  <input
+                    value={inventoryForm.webmailEmail}
+                    onChange={(event) =>
+                      setInventoryForm((prev) => ({ ...prev, webmailEmail: event.target.value }))
+                    }
+                    placeholder="account@mail.com"
+                    type="email"
+                  />
+                </div>
+                <div className="field-stack">
+                  <label>Webmail password</label>
+                  <input
+                    value={inventoryForm.webmailPassword}
+                    onChange={(event) =>
+                      setInventoryForm((prev) => ({ ...prev, webmailPassword: event.target.value }))
+                    }
+                    placeholder="webmail-password"
+                  />
+                </div>
               </div>
 
-              <button type="submit">Add encrypted inventory</button>
+              <button type="submit">Encrypt &amp; add to inventory</button>
             </form>
           </section>
         ) : null}

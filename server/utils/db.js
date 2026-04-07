@@ -10,14 +10,13 @@ const runtimePath = path.join(__dirname, '..', 'data', 'runtime-db.json');
 const seedPath = path.join(__dirname, '..', 'data', 'seed-db.json');
 
 function seedInventoryRecords(seed) {
-  seed.inventory = seed.inventory.map((record, index) => ({
+  seed.inventory = seed.inventory.map((record) => ({
     ...record,
     encryptedPayload: encryptPayload({
-      accessId: `${record.productId}-access-${String(index + 1).padStart(2, '0')}`,
-      secret: `Secret!${record.id}`,
-      email: `delivery-${record.id}@nova.local`,
-      emailSecret: `Mail!${record.id}`,
-      note: 'Placeholder delivery record — replace with real data via Admin panel.'
+      socialEmail: `placeholder@social.local`,
+      socialPassword: `PlaceholderSocialPass!`,
+      webmailEmail: `placeholder@webmail.local`,
+      webmailPassword: `PlaceholderWebmailPass!`
     })
   }));
 

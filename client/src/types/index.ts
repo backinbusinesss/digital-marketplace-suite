@@ -48,18 +48,16 @@ export interface Order {
   createdAt: string;
   deliveredAt?: string;
   delivery?: {
-    accessId?: string;
-    secret?: string;
-    email?: string;
-    emailSecret?: string;
-    note?: string;
+    socialEmail?: string;
+    socialPassword?: string;
+    webmailEmail?: string;
+    webmailPassword?: string;
   };
 }
 
 export interface InventoryEntryInput {
-  accessId: string;
-  secret: string;
-  email: string;
-  emailSecret: string;
-  note: string;
+  socialEmail: string;
+  socialPassword: string;
+  webmailEmail: string;
+  webmailPassword: string;
 }
