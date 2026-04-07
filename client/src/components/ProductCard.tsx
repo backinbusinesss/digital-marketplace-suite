@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Product } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 
-const PLATFORM_ICON: Record<string, string> = {
+export const PLATFORM_ICON: Record<string, string> = {
   Instagram: '📸',
   TikTok: '🎵',
   Snapchat: '👻',
@@ -11,16 +11,16 @@ const PLATFORM_ICON: Record<string, string> = {
   Roblox: '🎮',
 };
 
-const PLATFORM_COLOR: Record<string, string> = {
+export const PLATFORM_COLOR: Record<string, string> = {
   Instagram: 'linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366)',
-  TikTok: 'linear-gradient(135deg, #010101, #69C9D0)',
-  Snapchat: 'linear-gradient(135deg, #FFFC00, #FFD700)',
+  TikTok: 'linear-gradient(135deg, #111, #69C9D0)',
+  Snapchat: 'linear-gradient(135deg, #FFFC00, #e8e000)',
   Discord: 'linear-gradient(135deg, #5865F2, #7289da)',
-  GitHub: 'linear-gradient(135deg, #24292e, #586069)',
+  GitHub: 'linear-gradient(135deg, #2d333b, #768390)',
   Roblox: 'linear-gradient(135deg, #e53935, #b71c1c)',
 };
 
-const RARITY_CLASS: Record<string, string> = {
+export const RARITY_CLASS: Record<string, string> = {
   Legendary: 'pill--legendary',
   Epic: 'pill--epic',
   Rare: 'pill--rare',
@@ -40,25 +40,32 @@ export function ProductCard({
   const icon = PLATFORM_ICON[product.platform] ?? '🔷';
   const platformGradient = PLATFORM_COLOR[product.platform] ?? 'linear-gradient(135deg, #667eea, #764ba2)';
   const stockDots = Math.min(product.stockAvailable, STOCK_MAX);
+  const soldOut = product.stockAvailable === 0;
 
   return (
     <motion.article
       layout
-      className="product-card"
+      className={`product-card ${soldOut ? 'product-card--sold-out' : ''}`}
       data-rarity={product.rarity}
-      whileHover={{ y: -8, scale: 1.015 }}
+      whileHover={{ y: soldOut ? 0 : -8, scale: soldOut ? 1 : 1.015 }}
       transition={{ type: 'spring', stiffness: 240, damping: 20 }}
     >
       <div className="product-card__glow" />
 
+      {soldOut && (
+        <div className="sold-out-overlay">
+          <span>Sold Out</span>
+        </div>
+      )}
+
       <div className="product-card__top">
         <span
           className="pill pill--platform"
-          style={{ background: platformGradient, border: 'none', color: '#fff' }}
+          style={{ background: platformGradient, border: 'none', color: product.platform === 'Snapchat' ? '#111' : '#fff' }}
         >
           {icon} {product.platform}
         </span>
-        {product.featured && (
+        {product.featured && !soldOut && (
           <span className="pill pill--featured">★ Featured</span>
         )}
       </div>
@@ -99,8 +106,13 @@ export function ProductCard({
           <span>{t('price')}</span>
           <strong>${product.priceUsd.toLocaleString()}</strong>
         </div>
-        <button type="button" onClick={() => onOpen(product)}>
-          {t('buyNow')}
+        <button
+          type="button"
+          onClick={() => onOpen(product)}
+          disabled={soldOut}
+          className={soldOut ? 'btn-sold-out' : ''}
+        >
+          {soldOut ? 'Sold Out' : t('buyNow')}
         </button>
       </div>
     </motion.article>

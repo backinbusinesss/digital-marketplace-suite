@@ -2,8 +2,26 @@ import { useState } from 'react';
 import { api } from '../api/client';
 import { useLanguage } from '../context/LanguageContext';
 import { Order, PaymentMethod, Product } from '../types';
+import { PLATFORM_COLOR, PLATFORM_ICON, RARITY_CLASS } from './ProductCard';
+
+const CRYPTO_ICON: Record<string, string> = {
+  BTC: '₿',
+  LTC: 'Ł',
+  ETH: 'Ξ',
+  XMR: '⬡',
+  TON: '◈',
+  USDT: '₮',
+  SOL: '◎',
+};
 
 const paymentMethods: PaymentMethod[] = ['BTC', 'LTC', 'ETH', 'XMR', 'TON', 'USDT', 'SOL'];
+
+const STATUS_LABEL: Record<string, string> = {
+  awaiting_payment: '⏳ Awaiting payment',
+  paid: '✅ Paid',
+  delivered: '🎉 Delivered',
+  cancelled: '❌ Cancelled',
+};
 
 export function CheckoutModal({
   product,
@@ -20,6 +38,10 @@ export function CheckoutModal({
   const [working, setWorking] = useState(false);
 
   if (!product) return null;
+
+  const platformGradient = PLATFORM_COLOR[product.platform] ?? 'linear-gradient(135deg, #667eea, #764ba2)';
+  const platformIcon = PLATFORM_ICON[product.platform] ?? '🔷';
+  const snapchatText = product.platform === 'Snapchat';
 
   const createOrder = async () => {
     try {
@@ -51,34 +73,48 @@ export function CheckoutModal({
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-card" onClick={(event) => event.stopPropagation()}>
-        <button className="modal-close" onClick={onClose} type="button">
+        <button className="modal-close" onClick={onClose} type="button" aria-label="Close">
           ×
         </button>
 
         <div className="modal-header">
-          <span className="pill pill--accent">{product.platform}</span>
+          <div className="modal-header__badges">
+            <span
+              className="pill pill--platform"
+              style={{ background: platformGradient, border: 'none', color: snapchatText ? '#111' : '#fff' }}
+            >
+              {platformIcon} {product.platform}
+            </span>
+            <span className={`pill ${RARITY_CLASS[product.rarity] ?? ''}`}>
+              {product.rarity}
+            </span>
+          </div>
           <h3>{product.title}</h3>
           <p>{product.deliveryDescription}</p>
         </div>
 
-        <div className="detail-grid">
-          <div>
+        <div className="modal-price-row">
+          <div className="modal-price">
             <span>{t('price')}</span>
-            <strong>${product.priceUsd.toFixed(2)}</strong>
+            <strong>${product.priceUsd.toLocaleString()}</strong>
           </div>
-          <div>
-            <span>{t('rarity')}</span>
-            <strong>{product.rarity}</strong>
-          </div>
-          <div>
-            <span>{t('meaningLanguage')}</span>
-            <strong>{product.meaningLanguage}</strong>
-          </div>
-          <div>
+          <div className="detail-cell">
             <span>{t('stock')}</span>
-            <strong>{product.stockAvailable}</strong>
+            <strong>{product.stockAvailable} available</strong>
+          </div>
+          <div className="detail-cell">
+            <span>{t('category')}</span>
+            <strong>{product.category}</strong>
           </div>
         </div>
+
+        {product.previewDetails.length > 0 && (
+          <ul className="preview-list">
+            {product.previewDetails.map((detail) => (
+              <li key={detail}>{detail}</li>
+            ))}
+          </ul>
+        )}
 
         <div className="field-stack">
           <label>{t('orderEmail')}</label>
@@ -86,6 +122,7 @@ export function CheckoutModal({
             value={customerEmail}
             onChange={(event) => setCustomerEmail(event.target.value)}
             placeholder="client@example.com"
+            type="email"
           />
         </div>
 
@@ -99,6 +136,7 @@ export function CheckoutModal({
                 className={paymentMethod === method ? 'payment-pill active' : 'payment-pill'}
                 onClick={() => setPaymentMethod(method)}
               >
+                <span className="crypto-icon">{CRYPTO_ICON[method]}</span>
                 {method}
               </button>
             ))}
@@ -112,20 +150,23 @@ export function CheckoutModal({
         </div>
 
         <div className="button-row">
-          <button disabled={working || !customerEmail} onClick={createOrder} type="button">
-            {t('createOrder')}
+          <button disabled={working || !customerEmail || order !== null} onClick={createOrder} type="button">
+            {working && !order ? '⏳ Creating…' : t('createOrder')}
           </button>
-          <button disabled={working || !order} onClick={confirmPayment} type="button" className="secondary">
-            {t('simulatePayment')}
+          <button disabled={working || !order || order.status === 'delivered'} onClick={confirmPayment} type="button" className="secondary">
+            {working && order ? '⏳ Confirming…' : t('simulatePayment')}
           </button>
         </div>
 
         {message ? <p className="status-message">{message}</p> : null}
 
         {order ? (
-          <div className="note-card">
-            <strong>Order #{order.publicId}</strong>
-            <p>Status: {order.status}</p>
+          <div className="note-card order-result">
+            <div className="order-result__header">
+              <strong>Order #{order.publicId}</strong>
+              <span className="order-status-badge">{STATUS_LABEL[order.status] ?? order.status}</span>
+            </div>
+
             {order.delivery ? (
               <div className="delivery-reveal">
                 <div>
@@ -134,7 +175,7 @@ export function CheckoutModal({
                 </div>
                 <div>
                   <span>Secret</span>
-                  <strong>{order.delivery.secret}</strong>
+                  <strong className="delivery-secret">{order.delivery.secret}</strong>
                 </div>
                 <div>
                   <span>Email</span>
@@ -142,12 +183,14 @@ export function CheckoutModal({
                 </div>
                 <div>
                   <span>Email secret</span>
-                  <strong>{order.delivery.emailSecret}</strong>
+                  <strong className="delivery-secret">{order.delivery.emailSecret}</strong>
                 </div>
-                <div>
-                  <span>Note</span>
-                  <strong>{order.delivery.note}</strong>
-                </div>
+                {order.delivery.note && (
+                  <div className="delivery-note-full">
+                    <span>Note</span>
+                    <strong>{order.delivery.note}</strong>
+                  </div>
+                )}
               </div>
             ) : null}
           </div>

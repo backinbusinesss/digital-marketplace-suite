@@ -4,9 +4,11 @@ import { api } from '../api/client';
 import { HelpPanel } from '../components/HelpPanel';
 import { AdminSettings, Order, Product } from '../types';
 
+const PLATFORMS = ['Instagram', 'TikTok', 'Snapchat', 'Discord', 'GitHub', 'Roblox'];
+
 const defaultProduct = {
   title: '',
-  platform: 'Community',
+  platform: 'Instagram',
   category: 'Reserved Handle',
   rarity: 'Rare',
   meaningLanguage: 'English',
@@ -290,10 +292,12 @@ export function AdminPage() {
                   </div>
                   <div className="field-stack">
                     <label>Platform</label>
-                    <input
+                    <select
                       value={productForm.platform}
                       onChange={(event) => setProductForm((prev) => ({ ...prev, platform: event.target.value }))}
-                    />
+                    >
+                      {PLATFORMS.map((p) => <option key={p}>{p}</option>)}
+                    </select>
                   </div>
                   <div className="field-stack">
                     <label>Product type</label>
