@@ -1,0 +1,106 @@
+{
+  "settings": {
+    "brandName": "Nova Vault Market",
+    "heroLabel": "Premium digital inventory",
+    "supportEmail": "support@example.com",
+    "payments": ["BTC", "LTC", "ETH", "XMR", "TON", "USDT", "SOL"]
+  },
+  "products": [
+    {
+      "id": "prod_aurora",
+      "title": "Aurora",
+      "platform": "Community",
+      "category": "Reserved Handle",
+      "rarity": "Legendary",
+      "meaningLanguage": "English",
+      "priceUsd": 699,
+      "featured": true,
+      "status": "published",
+      "tags": ["short", "clean", "brandable"],
+      "shortDescription": "One-word premium identifier package with high brand potential.",
+      "deliveryDescription": "One encrypted delivery record will be released after confirmed payment, including the assigned access package and contact record.",
+      "previewDetails": ["One-word format", "Clean structure", "Instant release after payment"],
+      "stockAvailable": 2,
+      "createdAt": "2026-04-05T12:00:00.000Z"
+    },
+    {
+      "id": "prod_bacio",
+      "title": "Bacio",
+      "platform": "Social",
+      "category": "Reserved Handle",
+      "rarity": "Epic",
+      "meaningLanguage": "Italian",
+      "priceUsd": 420,
+      "featured": true,
+      "status": "published",
+      "tags": ["italian", "memorable", "warm"],
+      "shortDescription": "Italian word package ideal for lifestyle or luxury positioning.",
+      "deliveryDescription": "Assigned delivery record contains the packaged access set and the linked communication mailbox details.",
+      "previewDetails": ["Italian meaning", "Strong recall", "Premium lifestyle fit"],
+      "stockAvailable": 1,
+      "createdAt": "2026-04-04T10:20:00.000Z"
+    },
+    {
+      "id": "prod_stellar",
+      "title": "Stellar Link",
+      "platform": "Messaging",
+      "category": "Vanity Link",
+      "rarity": "Rare",
+      "meaningLanguage": "Universal",
+      "priceUsd": 199,
+      "featured": false,
+      "status": "published",
+      "tags": ["link", "clean", "fast delivery"],
+      "shortDescription": "Short branded vanity package with clean presentation.",
+      "deliveryDescription": "Delivery contains the unique release record and all private setup notes associated with the package.",
+      "previewDetails": ["Short format", "Good discoverability", "Immediate stock assignment"],
+      "stockAvailable": 3,
+      "createdAt": "2026-04-03T18:30:00.000Z"
+    }
+  ],
+  "inventory": [
+    {
+      "id": "inv_1",
+      "productId": "prod_aurora",
+      "encryptedPayload": "",
+      "used": false,
+      "createdAt": "2026-04-05T12:00:00.000Z"
+    },
+    {
+      "id": "inv_2",
+      "productId": "prod_aurora",
+      "encryptedPayload": "",
+      "used": false,
+      "createdAt": "2026-04-05T12:10:00.000Z"
+    },
+    {
+      "id": "inv_3",
+      "productId": "prod_bacio",
+      "encryptedPayload": "",
+      "used": false,
+      "createdAt": "2026-04-04T10:20:00.000Z"
+    },
+    {
+      "id": "inv_4",
+      "productId": "prod_stellar",
+      "encryptedPayload": "",
+      "used": false,
+      "createdAt": "2026-04-03T18:30:00.000Z"
+    },
+    {
+      "id": "inv_5",
+      "productId": "prod_stellar",
+      "encryptedPayload": "",
+      "used": false,
+      "createdAt": "2026-04-03T18:32:00.000Z"
+    },
+    {
+      "id": "inv_6",
+      "productId": "prod_stellar",
+      "encryptedPayload": "",
+      "used": false,
+      "createdAt": "2026-04-03T18:34:00.000Z"
+    }
+  ],
+  "orders": []
+}
