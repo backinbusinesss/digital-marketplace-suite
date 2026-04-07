@@ -1,5 +1,14 @@
 import { useLanguage } from '../context/LanguageContext';
 
+const PLATFORM_ICON: Record<string, string> = {
+  Instagram: '📸',
+  TikTok: '🎵',
+  Snapchat: '👻',
+  Discord: '💬',
+  GitHub: '⚡',
+  Roblox: '🎮',
+};
+
 interface SidebarProps {
   search: string;
   setSearch: (value: string) => void;
@@ -20,18 +29,30 @@ interface SidebarProps {
   clearFilters: () => void;
 }
 
+const RARITY_DOT: Record<string, string> = {
+  Legendary: '#ffe066',
+  Epic: '#c084fc',
+  Rare: '#60a5fa',
+  Common: '#94a3b8',
+};
+
 function CheckboxItem({
   label,
   active,
-  onClick
+  onClick,
+  dot
 }: {
   label: string;
   active: boolean;
   onClick: () => void;
+  dot?: string;
 }) {
   return (
     <button className={`check-item ${active ? 'active' : ''}`} onClick={onClick} type="button">
-      <span className="check-item__dot" />
+      <span
+        className="check-item__dot"
+        style={dot ? { background: dot, borderColor: dot } : undefined}
+      />
       {label}
     </button>
   );
@@ -39,14 +60,22 @@ function CheckboxItem({
 
 export function FilterSidebar(props: SidebarProps) {
   const { t } = useLanguage();
+  const hasActiveFilters =
+    props.selectedPlatforms.length > 0 ||
+    props.selectedCategories.length > 0 ||
+    props.selectedRarity.length > 0 ||
+    props.selectedLanguages.length > 0 ||
+    props.search.trim().length > 0;
 
   return (
     <aside className="sidebar-card">
       <div className="sidebar-card__title-row">
         <h3>{t('filtersTitle')}</h3>
-        <button onClick={props.clearFilters} type="button">
-          {t('clearFilters')}
-        </button>
+        {hasActiveFilters && (
+          <button onClick={props.clearFilters} type="button">
+            {t('clearFilters')}
+          </button>
+        )}
       </div>
 
       <div className="field-stack">
@@ -73,7 +102,7 @@ export function FilterSidebar(props: SidebarProps) {
         {props.platforms.map((platform) => (
           <CheckboxItem
             key={platform}
-            label={platform}
+            label={`${PLATFORM_ICON[platform] ?? '🔷'} ${platform}`}
             active={props.selectedPlatforms.includes(platform)}
             onClick={() => props.togglePlatform(platform)}
           />
@@ -100,6 +129,7 @@ export function FilterSidebar(props: SidebarProps) {
             label={rarity}
             active={props.selectedRarity.includes(rarity)}
             onClick={() => props.toggleRarity(rarity)}
+            dot={RARITY_DOT[rarity]}
           />
         ))}
       </div>

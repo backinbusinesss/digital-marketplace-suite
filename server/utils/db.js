@@ -10,54 +10,15 @@ const runtimePath = path.join(__dirname, '..', 'data', 'runtime-db.json');
 const seedPath = path.join(__dirname, '..', 'data', 'seed-db.json');
 
 function seedInventoryRecords(seed) {
-  const defaults = {
-    inv_1: {
-      accessId: 'aurora-access-01',
-      secret: 'Aurora!Secure!01',
-      email: 'aurora01@nova.local',
-      emailSecret: 'Mail!Aurora!01',
-      note: 'Primary release record.'
-    },
-    inv_2: {
-      accessId: 'aurora-access-02',
-      secret: 'Aurora!Secure!02',
-      email: 'aurora02@nova.local',
-      emailSecret: 'Mail!Aurora!02',
-      note: 'Backup premium release record.'
-    },
-    inv_3: {
-      accessId: 'bacio-release-01',
-      secret: 'Bacio!Secure!01',
-      email: 'bacio01@nova.local',
-      emailSecret: 'Mail!Bacio!01',
-      note: 'Italian premium package record.'
-    },
-    inv_4: {
-      accessId: 'stellar-release-01',
-      secret: 'Stellar!Link!01',
-      email: 'stellar01@nova.local',
-      emailSecret: 'Mail!Stellar!01',
-      note: 'Messaging vanity release.'
-    },
-    inv_5: {
-      accessId: 'stellar-release-02',
-      secret: 'Stellar!Link!02',
-      email: 'stellar02@nova.local',
-      emailSecret: 'Mail!Stellar!02',
-      note: 'Messaging vanity reserve.'
-    },
-    inv_6: {
-      accessId: 'stellar-release-03',
-      secret: 'Stellar!Link!03',
-      email: 'stellar03@nova.local',
-      emailSecret: 'Mail!Stellar!03',
-      note: 'Messaging vanity reserve.'
-    }
-  };
-
-  seed.inventory = seed.inventory.map((record) => ({
+  seed.inventory = seed.inventory.map((record, index) => ({
     ...record,
-    encryptedPayload: encryptPayload(defaults[record.id])
+    encryptedPayload: encryptPayload({
+      accessId: `${record.productId}-access-${String(index + 1).padStart(2, '0')}`,
+      secret: `Secret!${record.id}`,
+      email: `delivery-${record.id}@nova.local`,
+      emailSecret: `Mail!${record.id}`,
+      note: 'Placeholder delivery record — replace with real data via Admin panel.'
+    })
   }));
 
   return seed;

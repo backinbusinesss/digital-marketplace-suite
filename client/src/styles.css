@@ -188,6 +188,31 @@ button {
   color: #a6ffe2;
 }
 
+.pill--featured {
+  background: rgba(255, 200, 30, 0.12);
+  border-color: rgba(255, 200, 30, 0.3);
+  color: #ffe066;
+  font-size: 0.8rem;
+}
+
+.pill--legendary {
+  background: rgba(255, 200, 30, 0.14);
+  border-color: rgba(255, 200, 30, 0.36);
+  color: #ffe066;
+}
+
+.pill--epic {
+  background: rgba(192, 132, 252, 0.14);
+  border-color: rgba(192, 132, 252, 0.36);
+  color: #d8a4ff;
+}
+
+.pill--rare {
+  background: rgba(96, 165, 250, 0.14);
+  border-color: rgba(96, 165, 250, 0.36);
+  color: #93c5fd;
+}
+
 .store-layout,
 .admin-grid-two {
   display: grid;
@@ -321,15 +346,41 @@ textarea:focus {
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: linear-gradient(180deg, rgba(19, 26, 52, 0.88), rgba(9, 13, 28, 0.88));
+  transition: border-color 200ms ease;
+}
+
+.product-card[data-rarity="Legendary"] {
+  border-color: rgba(255, 200, 30, 0.22);
+}
+
+.product-card[data-rarity="Epic"] {
+  border-color: rgba(192, 132, 252, 0.22);
+}
+
+.product-card[data-rarity="Rare"] {
+  border-color: rgba(96, 165, 250, 0.18);
 }
 
 .product-card__glow {
   position: absolute;
   inset: auto -40px -80px auto;
-  width: 180px;
-  height: 180px;
+  width: 200px;
+  height: 200px;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(0, 255, 200, 0.2), transparent 65%);
+  background: radial-gradient(circle, rgba(0, 255, 200, 0.18), transparent 65%);
+  pointer-events: none;
+}
+
+.product-card[data-rarity="Legendary"] .product-card__glow {
+  background: radial-gradient(circle, rgba(255, 200, 30, 0.22), transparent 65%);
+}
+
+.product-card[data-rarity="Epic"] .product-card__glow {
+  background: radial-gradient(circle, rgba(192, 132, 252, 0.22), transparent 65%);
+}
+
+.product-card[data-rarity="Rare"] .product-card__glow {
+  background: radial-gradient(circle, rgba(96, 165, 250, 0.2), transparent 65%);
 }
 
 .product-card__top,
@@ -348,6 +399,7 @@ textarea:focus {
 
 .product-card__top,
 .product-card__footer,
+.product-card__stock-row,
 .button-row {
   display: flex;
   align-items: center;
@@ -357,14 +409,59 @@ textarea:focus {
 .product-card h3,
 .modal-header h3,
 .auth-card h1 {
-  margin: 18px 0 10px;
-  font-size: 1.45rem;
+  margin: 16px 0 8px;
+  font-size: 1.5rem;
+  letter-spacing: -0.01em;
 }
 
 .product-card p,
 .modal-header p,
 .empty-state {
   color: #a8b4d8;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.product-card__rarity-row {
+  display: flex;
+  gap: 8px;
+  margin: 14px 0 10px;
+}
+
+.product-card__stock-row {
+  margin: 10px 0 14px;
+  gap: 10px;
+}
+
+.stock-label {
+  color: #8f9bbf;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.stock-dots {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.stock-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+}
+
+.stock-dot--filled {
+  background: rgba(99, 220, 180, 0.8);
+  border-color: rgba(99, 220, 180, 0.8);
+}
+
+.stock-count {
+  color: #8f9bbf;
+  font-size: 0.78rem;
+  margin-left: 4px;
 }
 
 .product-card__meta {
@@ -379,6 +476,20 @@ textarea:focus {
   color: #8f9bbf;
   font-size: 0.82rem;
   margin-bottom: 4px;
+}
+
+.product-card__price span {
+  display: block;
+  color: #8f9bbf;
+  font-size: 0.78rem;
+  margin-bottom: 2px;
+}
+
+.product-card__price strong {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #edf2ff;
 }
 
 .tag-row {

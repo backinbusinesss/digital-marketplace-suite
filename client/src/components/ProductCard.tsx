@@ -2,6 +2,33 @@ import { motion } from 'framer-motion';
 import { Product } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 
+const PLATFORM_ICON: Record<string, string> = {
+  Instagram: '📸',
+  TikTok: '🎵',
+  Snapchat: '👻',
+  Discord: '💬',
+  GitHub: '⚡',
+  Roblox: '🎮',
+};
+
+const PLATFORM_COLOR: Record<string, string> = {
+  Instagram: 'linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366)',
+  TikTok: 'linear-gradient(135deg, #010101, #69C9D0)',
+  Snapchat: 'linear-gradient(135deg, #FFFC00, #FFD700)',
+  Discord: 'linear-gradient(135deg, #5865F2, #7289da)',
+  GitHub: 'linear-gradient(135deg, #24292e, #586069)',
+  Roblox: 'linear-gradient(135deg, #e53935, #b71c1c)',
+};
+
+const RARITY_CLASS: Record<string, string> = {
+  Legendary: 'pill--legendary',
+  Epic: 'pill--epic',
+  Rare: 'pill--rare',
+  Common: '',
+};
+
+const STOCK_MAX = 5;
+
 export function ProductCard({
   product,
   onOpen
@@ -10,35 +37,52 @@ export function ProductCard({
   onOpen: (product: Product) => void;
 }) {
   const { t } = useLanguage();
+  const icon = PLATFORM_ICON[product.platform] ?? '🔷';
+  const platformGradient = PLATFORM_COLOR[product.platform] ?? 'linear-gradient(135deg, #667eea, #764ba2)';
+  const stockDots = Math.min(product.stockAvailable, STOCK_MAX);
 
   return (
     <motion.article
       layout
       className="product-card"
-      whileHover={{ y: -6, scale: 1.01 }}
-      transition={{ type: 'spring', stiffness: 220, damping: 18 }}
+      data-rarity={product.rarity}
+      whileHover={{ y: -8, scale: 1.015 }}
+      transition={{ type: 'spring', stiffness: 240, damping: 20 }}
     >
       <div className="product-card__glow" />
+
       <div className="product-card__top">
-        <span className="pill pill--accent">{product.platform}</span>
-        <span className="pill">{product.rarity}</span>
+        <span
+          className="pill pill--platform"
+          style={{ background: platformGradient, border: 'none', color: '#fff' }}
+        >
+          {icon} {product.platform}
+        </span>
+        {product.featured && (
+          <span className="pill pill--featured">★ Featured</span>
+        )}
       </div>
 
       <h3>{product.title}</h3>
       <p>{product.shortDescription}</p>
 
-      <div className="product-card__meta">
-        <div>
-          <span>{t('category')}</span>
-          <strong>{product.category}</strong>
-        </div>
-        <div>
-          <span>{t('meaningLanguage')}</span>
-          <strong>{product.meaningLanguage}</strong>
-        </div>
-        <div>
-          <span>{t('stock')}</span>
-          <strong>{product.stockAvailable}</strong>
+      <div className="product-card__rarity-row">
+        <span className={`pill ${RARITY_CLASS[product.rarity] ?? ''}`}>
+          {product.rarity}
+        </span>
+        <span className="pill">{product.category}</span>
+      </div>
+
+      <div className="product-card__stock-row">
+        <span className="stock-label">{t('stock')}</span>
+        <div className="stock-dots">
+          {Array.from({ length: STOCK_MAX }).map((_, i) => (
+            <span
+              key={i}
+              className={`stock-dot ${i < stockDots ? 'stock-dot--filled' : ''}`}
+            />
+          ))}
+          <span className="stock-count">{product.stockAvailable}</span>
         </div>
       </div>
 
@@ -51,9 +95,9 @@ export function ProductCard({
       </div>
 
       <div className="product-card__footer">
-        <div>
+        <div className="product-card__price">
           <span>{t('price')}</span>
-          <strong>${product.priceUsd.toFixed(2)}</strong>
+          <strong>${product.priceUsd.toLocaleString()}</strong>
         </div>
         <button type="button" onClick={() => onOpen(product)}>
           {t('buyNow')}
